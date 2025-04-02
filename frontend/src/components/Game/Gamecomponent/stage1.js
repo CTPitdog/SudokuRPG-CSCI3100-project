@@ -13,6 +13,21 @@ export const defineStage1Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT, pla
     player.pos.y = HEIGHT / 2;
     player.play("idie");
 
+    let cat = k.add([k.sprite("cat"), 
+      { anim: "sit1" }, 
+      k.scale(1.5), 
+      k.pos(0, 0), 
+      k.layer("obj"),
+      k.color(100, 200, 27),
+      k.area({ scale: 0.5, offset: k.vec2(0, 10) }),
+      k.body({ isStatic: true }),
+      k.anchor("center"),
+      "cat",
+    ]);
+    cat.pos.x = 20;
+    cat.pos.y = HEIGHT /2+20;
+    cat.play("sit1");
+
     // Add walls
     const walls = [
       [WIDTH, WALL_THICKNESS, 0, -WALL_THICKNESS],
@@ -40,7 +55,7 @@ export const defineStage1Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT, pla
     const enemy = k.add([
       k.sprite("enemy", { anim: "idle" }),
       k.scale(3),
-      k.area({ scale: 1 }),
+      k.area({ scale: 0.8 }),
       k.pos(WIDTH / 2, 20),
       k.body({ isStatic: true }),
       k.anchor("center"),
@@ -58,9 +73,11 @@ export const defineStage1Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT, pla
     const noButton = document.getElementById("noButton");
     const gamecanvas = document.getElementById("gameCanvas");
     const dialogueList = [
-      "Hello",
-      "Ok",
-      "Would you like to play Sudoku?",
+      ': So, computer are you going to teach us sudoku? ',
+      ": ……",
+      ": You are so boring ,here is the first question. For the classical sudoku,how many numbers does a sudoku grid require in order to obtain unique solution?",
+      ": 17 clues",
+      ": Perfect! Face our sudoku and Loss, stranger!"
     ];
 
     // Function to show the dialog
@@ -83,7 +100,7 @@ export const defineStage1Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT, pla
         return;
       }
       document.getElementById("dialogue").innerText = currentDialogue;
-      if (currentDialogue === "Would you like to play Sudoku?") {
+      if (currentDialogue === ": Perfect! Face our sudoku and Loss, stranger!") {
         yesButton.style.display = "block";
         noButton.style.display = "block";
       }

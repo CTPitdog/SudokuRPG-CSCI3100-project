@@ -38,7 +38,7 @@ export const defineStage3Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
       const enemy = k.add([
         k.sprite("enemy3", { anim: "idle" }),
         k.scale(1.5),
-        k.area({ scale: 1.2 }),
+        k.area({ scale: 1 }),
         k.pos(WIDTH / 2, 20),
         k.body({ isStatic: true }),
         k.anchor("center"),
@@ -57,9 +57,17 @@ export const defineStage3Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
     const noButton = document.getElementById("noButton");
     const gamecanvas = document.getElementById("gameCanvas");
     const dialogueList = [
-      "Hello",
-      "Ok",
-      "Would you like to play Sudoku?",
+      ": You are the first one who beat up two of my teammates…you are really tough.",
+      ": ...",
+      ": But NOW ! It will be the END! No one can answer MY QUESTION ! Remember my name LOSSER! I am  UNBREAKABLE STRONGEST GENERIOUS SERIOUS COOLEST ADOLPH BlANIE CHARLES DAVID EARLL FREDERICK GERALD HUBERT NERO OLIVER PAUL QUINERY RANDOLPH SHERMAN THOMAS UNCAS VICTOR" + 
+      "Wolfescgelgelsteinhausenbergerdorffwwwwwppppkdpasldm "+
+      "qhejthkjghiqorquwirioeqythjqhgjkhejkdjmscnvjwdauriquropqir "+
+      "jfgiosdfjgopsidgopiqwporkopqwkrljrkwnqrlkjenkewgkjgijqweor "+
+      "kjewurqoiwoerjwkqlrnqwklrjikejgdosagjdskgndksngdskjsdkfjoe "+
+      "lewnfkewjfowfopwefjwekfjweknfklwenfklewhjfioewjfiewjfiiofu",
+      ": SO HERE IS MY QUESTIONNNN: \n HOW MANY GRIDS IN SUDOKU?",
+      ": …… 81",
+      ": HOLY SHIT, let face my challenge!",
     ];
 
     // Function to show the dialog
@@ -82,7 +90,7 @@ export const defineStage3Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
         return;
       }
       document.getElementById("dialogue").innerText = currentDialogue;
-      if (currentDialogue == "Would you like to play Sudoku?") {
+      if (currentDialogue == ": HOLY SHIT, let face my challenge!") {
         yesButton.style.display = "block";
         noButton.style.display = "block";
       }

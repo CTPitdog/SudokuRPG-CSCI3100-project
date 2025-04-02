@@ -38,7 +38,7 @@ export const defineStage4Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
     const enemy = k.add([
       k.sprite("enemy4", { anim: "idle" }),
       k.scale(1.5),
-      k.area({ scale: 1.2 }),
+      k.area({ scale: 1}),
       k.pos(WIDTH / 2, 20),
       k.body({ isStatic: true }),
       k.anchor("center"),
@@ -56,9 +56,11 @@ export const defineStage4Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
     const noButton = document.getElementById("noButton");
     const gamecanvas = document.getElementById("gameCanvas");
     const dialogueList = [
-      "Hello",
-      "Ok",
-      "Would you like to play Sudoku?",
+      ": Finally, someone debate  Dr Triangle, Terminal, Master Kung Fu. If you win in this final round … you will be our KING, the KING of whole universe and it will be the end of our journey. What is your pronunciation ? Stranger.",
+      ": ……CTP",
+      ": OK, CTP here is my final question. What is the space complexity of Sudoku?",
+      ": O(n^2)",
+      ": Let start the final dance, shall we?"
     ];
 
     // Function to show the dialog
@@ -81,7 +83,7 @@ export const defineStage4Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
         return;
       }
       document.getElementById("dialogue").innerText = currentDialogue;
-      if (currentDialogue == "Would you like to play Sudoku?") {
+      if (currentDialogue == ": Let start the final dance, shall we?") {
         yesButton.style.display = "block";
         noButton.style.display = "block";
       }

@@ -39,7 +39,7 @@ export const defineStage2Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
       const enemy = k.add([
         k.sprite("enemy2", { anim: "idle" }),
         k.scale(1.5),
-        k.area({ scale: 1.2 }),
+        k.area({ scale: 1 }),
         k.pos(WIDTH / 2, 20),
         k.body({ isStatic: true }),
         k.anchor("center"),
@@ -58,9 +58,11 @@ export const defineStage2Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
     const noButton = document.getElementById("noButton");
     const gamecanvas = document.getElementById("gameCanvas");
     const dialogueList = [
-      "Hello",
-      "Ok",
-      "Would you like to play Sudoku?",
+      ": Wow, you beat up Dr Triangle, you knock my shocks off!",
+      ": ...",
+      ": you are a cool dude……So here is the next question how many possible combinations of sudoku?",
+      ": 6.670.903.752.021.072.936.960",
+      ": Watch Out!",
     ];
 
     // Function to show the dialog
@@ -83,7 +85,7 @@ export const defineStage2Scene = (k, setShowSudoku, BASE_WIDTH, BASE_HEIGHT,play
         return;
       }
       document.getElementById("dialogue").innerText = currentDialogue;
-      if (currentDialogue == "Would you like to play Sudoku?") {
+      if (currentDialogue == ": Watch Out!") {
         yesButton.style.display = "block";
         noButton.style.display = "block";
       }
