@@ -8,11 +8,6 @@ const RecordTime = require('./RecordTimeModel');
 const crypto = require('crypto');
 const { sendVerificationEmail, sendPasswordResetEmail } = require('./utils/sendEmail');
 
-module.exports = User;
-
-const PORT = process.env.PORT || 3001;
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/CSCI3100project";
-
 const app = express();
 
 const LICENSE_KEY = "ABC123-XYZ789";
@@ -20,7 +15,7 @@ const LICENSE_KEY = "ABC123-XYZ789";
 const validateLicenseKey = (req, res, next) => {
   const clientLicenseKey = req.headers['x-license-key'];
   if (!clientLicenseKey || clientLicenseKey !== LICENSE_KEY) {
-    return res.status(403).json({
+    return res.status(401).json({
       status: "error",
       message: "Invalid or missing license key",
     });
@@ -37,15 +32,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api", validateLicenseKey);
 
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log("Successfully connected to MongoDB."))
-  .catch((error) => {
+// Move database connection to a separate function
+const connectDB = async (uri) => {
+  try {
+    await mongoose.connect(uri || process.env.MONGODB_URI || "mongodb://localhost:27017/CSCI3100project");
+    console.log("Successfully connected to MongoDB.");
+  } catch (error) {
     console.log("Could not connect to MongoDB.");
     console.error(error);
-  });
+    throw error;
+  }
+};
+
+// Only connect to database if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+}
 
 app.get("/api/test-db", async (req, res) => {
   try {
@@ -399,6 +401,14 @@ app.get("/api/rankings", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+const PORT = process.env.PORT || 3001;
+
+// Only start the server if not being required as a module (for testing)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server listening on ${PORT}`);
+  });
+}
+
+// Export both app and connectDB for testing
+module.exports = { app, connectDB };

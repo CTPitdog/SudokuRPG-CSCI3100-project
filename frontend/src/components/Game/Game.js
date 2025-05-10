@@ -219,7 +219,7 @@ const Game = () => {
     defineStage1Scene(k.current, setShowSudoku,BASE_WIDTH,BASE_HEIGHT,player);
     defineStage2Scene(k.current, setShowSudoku,BASE_WIDTH,BASE_HEIGHT,player);
     defineStage3Scene(k.current, setShowSudoku,BASE_WIDTH,BASE_HEIGHT,player); 
-    defineStage4Scene(k.current, setShowSudoku,BASE_HEIGHT,BASE_HEIGHT,player);
+    defineStage4Scene(k.current, setShowSudoku,BASE_WIDTH,BASE_HEIGHT,player);
     defineWinScene(k.current, setShowSudoku,totalTime,recordMessage); // Define "win" scene
 
 
@@ -254,9 +254,9 @@ const Game = () => {
 
   window.onbeforeunload = function () {navigate('/home');}
 
-  const recordTotalTime = async () => {
-    console.log("Recording total time:", totalTime);
-    const user = localStorage.getItem('user'); // Adjust based on your auth setup
+  const recordTotalTime = async (finalTime) => {
+    console.log("Recording total time:", finalTime);
+    const user = localStorage.getItem('user');
     const email = user ? JSON.parse(user).email : null;
     if (!email) {
       console.error('No user email found');
@@ -272,7 +272,7 @@ const Game = () => {
         },
         body: JSON.stringify({
           email,
-          totalTime,
+          totalTime: finalTime,
         }),
       });
       const result = await response.json();
@@ -280,7 +280,10 @@ const Game = () => {
         console.error('Failed to record total time:', result.message);
       } else {
         console.log(result.message);
-        setRecordMessage(result.message)
+        setRecordMessage(result.message);
+        // Redefine win scene after record message is set
+        defineWinScene(kRef.current, setShowSudoku, finalTime, result.message);
+        kRef.current.go("win");
       }
     } catch (error) {
       console.error('Error recording total time:', error);
@@ -292,10 +295,33 @@ const Game = () => {
     if (!kRef.current) return;
 
     if (won) {
-      setTotalTime(prev => prev + timeTaken); // Accumulate time taken for this stage
-      const enemies = kRef.current.get("enemy");
-      enemies.forEach(enemy => kRef.current.destroy(enemy));
-      tonextstage();
+      setTotalTime(prev => {
+        const newTotalTime = prev + timeTaken;
+        const enemies = kRef.current.get("enemy");
+        enemies.forEach(enemy => kRef.current.destroy(enemy));
+        
+        // Check if this is the last stage
+        const currentStage = kRef.current.getSceneName();
+        const currentIndex = stagelist.indexOf(currentStage);
+        const nextstage = stagelist[currentIndex + 1];
+        
+        if (nextstage === "win") {
+          setShowVideo(true);
+          if (localStorage.getItem('cheat')==='false'){
+            setVideoSource("videos/true.mp4");
+            // Use the new total time value directly
+            recordTotalTime(newTotalTime);
+          }
+          else{
+            setVideoSource("videos/cheat.mp4");
+            defineWinScene(kRef.current, setShowSudoku, 0, 'Cheat no record.');
+            kRef.current.go("win");
+          }
+        } else {
+          tonextstage();
+        }
+        return newTotalTime;
+      });
     } else {
       setVideoSource("videos/lose.mp4")
       setShowVideo(true)
@@ -306,25 +332,26 @@ const Game = () => {
   const tonextstage = () => {
     let currentStage = kRef.current.getSceneName();
     const currentIndex = stagelist.indexOf(currentStage);
-      setShowSudoku(false);      
-      stagenum.current += 1;
-      let nextstage = stagelist[currentIndex + 1];
-      if (nextstage === "win") {
-        kRef.current.go("win");
-        setShowVideo(true);
-        if (localStorage.getItem('cheat')==='false'){
-          setVideoSource("videos/true.mp4");
-          recordTotalTime();
-        }
-        else{
-          setVideoSource("videos/cheat.mp4");
-        }
+    setShowSudoku(false);      
+    stagenum.current += 1;
+    let nextstage = stagelist[currentIndex + 1];
+    if (nextstage === "win") {
+      setShowVideo(true);
+      if (localStorage.getItem('cheat')==='false'){
+        setVideoSource("videos/true.mp4");
+        // Use the current totalTime state
+        recordTotalTime(totalTime);
       }
       else{
-      kRef.current.go(nextstage, stagenum.current);
+        setVideoSource("videos/cheat.mp4");
+        defineWinScene(kRef.current, setShowSudoku, 0, 'Cheat no record.');
+        kRef.current.go("win");
       }
-      if (canvasRef.current) canvasRef.current.focus();
-
+    }
+    else{
+      kRef.current.go(nextstage, stagenum.current);
+    }
+    if (canvasRef.current) canvasRef.current.focus();
   };
 
   useEffect(() => {
